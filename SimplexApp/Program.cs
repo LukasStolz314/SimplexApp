@@ -25,6 +25,11 @@ internal class Program
 
     static void SimplexCLIHandle(FileInfo fileInfo)
     {
-        var lines = new LPParser(fileInfo).Parse();
+        // Parse raw input into data structures
+        var parsedProblem = new LPParser(fileInfo).Parse();
+
+        // Arrange data structures to array table and header lists
+        var table = new LPArrange().Arrange(
+            parsedProblem.Item1, parsedProblem.Item2);
     }
 }
