@@ -28,8 +28,13 @@ internal class Program
         // Parse raw input into data structures
         var parsedProblem = new LPParser(fileInfo).Parse();
 
+        LPSolver solver = new();
+
         // Arrange data structures to array table and header lists
-        var table = new LPArrange().Arrange(
+        var table = solver.Arrange(
             parsedProblem.Item1, parsedProblem.Item2);
+
+        // Solve problem
+        var result = solver.Solve(table);
     }
 }
