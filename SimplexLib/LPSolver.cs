@@ -39,52 +39,67 @@ public class LPSolver
         return table;
     }
 
-    public Int32 Solve(Table table)
+    public List<(String, Double)> Solve(Table table)
     {
         // Useful information
         Int32 highestRow = table.Array.GetLength(0) - 1;
         Int32 highestColumn = table.Array.GetLength(1) - 1;
 
-        // Get column index for lowest object function value
-        List<Double> row = table.GetRow(highestRow).ToList();
-        Int32 lowestObjFncIndex = row.IndexOf(row.Min());
-
-        // Calculate quotients for every value with calculated column index
-        Dictionary<Int32, Double> quotients = new();
-        for (int i = 0; i < highestRow; i++)
+        while(table.GetRow(highestRow).Any(x => x < 0))
         {
-            Double quotient = table.Array[i, highestColumn] / table.Array[i, lowestObjFncIndex];
-            quotients.Add(i, quotient);
-        }
+            // Get column index for lowest object function value
+            List<Double> row = table.GetRow(highestRow).ToList();
+            Int32 lowestObjFncIndex = row.IndexOf(row.Min());
 
-        // Determine lowest quotient and write it to the result field
-        KeyValuePair<Int32, Double> lowestQuotient = quotients.MinBy(x => x.Value);
-        table.Array[lowestQuotient.Key, highestColumn] = lowestQuotient.Value;
-
-        // Divide lowest quotient row by the record with
-        // lowest quotient and lowest object function value (Create unit vector)
-        double rowQuotient = table.Array[lowestQuotient.Key, lowestObjFncIndex];
-        for (int i = 0; i < highestColumn; i++)
-            table.Array[lowestQuotient.Key, i] /= rowQuotient;
-
-        // Switch variable names
-        table.SwitchColumnWithRowHeader(lowestObjFncIndex, lowestQuotient.Key);
-
-        for(int i = 0; i <= highestRow; i++)
-        {
-            if(i != lowestQuotient.Key)
+            // Calculate quotients for every value with calculated column index
+            Dictionary<Int32, Double> quotients = new();
+            for (int i = 0; i < highestRow; i++)
             {
-                // Value of record in current row and lowest object function value column
-                Double rowValue = table.Array[i, lowestObjFncIndex];
-                for (int j = 0; j <= highestColumn; j++)
+                Double quotient = table.Array[i, highestColumn] / table.Array[i, lowestObjFncIndex];
+                quotients.Add(i, quotient);
+            }
+
+            // Determine lowest quotient and write it to the result field
+            KeyValuePair<Int32, Double> lowestQuotient = quotients.MinBy(x => x.Value);
+            table.Array[lowestQuotient.Key, highestColumn] = lowestQuotient.Value;
+
+            // Divide lowest quotient row by the record with
+            // lowest quotient and lowest object function value (Create unit vector)
+            double rowQuotient = table.Array[lowestQuotient.Key, lowestObjFncIndex];
+            for (int i = 0; i < highestColumn; i++)
+                table.Array[lowestQuotient.Key, i] /= rowQuotient;
+
+            // Switch variable names
+            table.SwitchColumnWithRowHeader(lowestObjFncIndex, lowestQuotient.Key);
+
+            // Create unit vector
+            for (int i = 0; i <= highestRow; i++)
+            {
+                if (i != lowestQuotient.Key)
                 {
-                    double recordValue = table.Array[i, j];
-                    double lowestQuotientRecordValue = table.Array[lowestQuotient.Key, j];
-                    table.Array[i, j] = recordValue - rowValue * lowestQuotientRecordValue;
+                    // Value of record in current row and lowest object function value column
+                    Double rowValue = table.Array[i, lowestObjFncIndex];
+                    for (int j = 0; j <= highestColumn; j++)
+                    {
+                        double recordValue = table.Array[i, j];
+                        double lowestQuotientRecordValue = table.Array[lowestQuotient.Key, j];
+                        table.Array[i, j] = recordValue - rowValue * lowestQuotientRecordValue;
+                    }
                 }
             }
         }
 
-        return highestColumn;
+        List<(String, Double)> result = new();
+        for(int i = 0; i < highestRow; i++)
+        {
+            (String, Double) tuple = new(table.RowVarNames[i],
+                table.Array[i, highestColumn]);
+
+            result.Add(tuple);
+        }
+
+        result.Add(new("Result", table.Array[highestRow, highestColumn]));
+
+        return result;
     }
 }

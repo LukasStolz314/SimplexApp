@@ -35,6 +35,9 @@ internal class Program
             parsedProblem.Item1, parsedProblem.Item2);
 
         // Solve problem
-        var result = solver.Solve(table);
+        List<(String, Double)> result = solver.Solve(table);
+
+        foreach(var row in result)
+            Console.WriteLine($"{row.Item1}: {row.Item2}");
     }
 }
