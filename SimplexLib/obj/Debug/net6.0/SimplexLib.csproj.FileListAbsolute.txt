@@ -1,0 +1,12 @@
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\bin\Debug\net6.0\SimplexLib.deps.json
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\bin\Debug\net6.0\SimplexLib.dll
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\bin\Debug\net6.0\SimplexLib.pdb
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\SimplexLib.csproj.AssemblyReference.cache
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\SimplexLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\SimplexLib.AssemblyInfoInputs.cache
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\SimplexLib.AssemblyInfo.cs
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\SimplexLib.csproj.CoreCompileInputs.cache
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\SimplexLib.dll
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\refint\SimplexLib.dll
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\SimplexLib.pdb
+C:\Users\Lukas\source\angular\SimplexApp\SimplexLib\obj\Debug\net6.0\ref\SimplexLib.dll
