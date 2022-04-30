@@ -21,8 +21,11 @@ public class LPParser
         ObjFunction objFunction = GetObjFunction(relLines.First());
 
         // Retrieves the constraints
-        var constraintLines = relLines.Where(x => !x.StartsWith("min:")).ToList();
-        List <Constraint> constraints = GetConstraints(constraintLines);
+        var constraintLines = relLines.Where(
+            x => !x.StartsWith("min:") && !x.StartsWith("max:")
+        ).ToList();
+
+        List<Constraint> constraints = GetConstraints(constraintLines);
 
         return (objFunction, constraints);
     }
