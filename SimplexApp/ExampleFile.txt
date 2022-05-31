@@ -1,5 +1,0 @@
-// Objective function
-min: + 150*x1 + 100*x2;
-// constraints
- + 16*x1 + 6*x2 >= 252;
- + 4*x1 + 12*x2 >= 168;

@@ -9,7 +9,7 @@ public class LPParser
         filePath = fileInfo.FullName;
     }
 
-    public (ObjFunction, List<Constraint>) Parse()
+    public List<Dictionary<String, Double>> Parse()
     {
         // Reads and parses every line into list
         List<String> allLines = File.ReadAllLines(filePath).ToList();
@@ -18,16 +18,18 @@ public class LPParser
         List<String> relLines = RemoveComments(allLines);
 
         // Retrieves the objective function
-        ObjFunction objFunction = GetObjFunction(relLines.First());
+        Dictionary<String, Double> firstRow = GetFirstRow(relLines.First());
 
-        // Retrieves the constraints
-        var constraintLines = relLines.Where(
-            x => !x.StartsWith("min:") && !x.StartsWith("max:")
-        ).ToList();
+        List<Dictionary<String, Double>> result = new () { firstRow };
 
-        List<Constraint> constraints = GetConstraints(constraintLines);
+        // Remove first row
+        relLines.RemoveAt (0);
 
-        return (objFunction, constraints);
+        // Gets constraints and adds them to the list
+        var constraints = GetConstraints(relLines);
+        result.AddRange (constraints);
+
+        return result;
     }
 
     private List<String> RemoveComments(List<String> lines)
@@ -44,64 +46,57 @@ public class LPParser
         return result;
     }
 
-    private ObjFunction GetObjFunction(String expression)
+    private Dictionary<String, Double> GetFirstRow(String expression)
     {
-        // Evaluates problem type
-        ProblemType problemType = expression.StartsWith("min:") 
-            ? ProblemType.Minimize 
-            : ProblemType.Maximize;
 
         // Filters out unnecesarry parts
-        String filtered = expression
-            .Replace("min:", "").Replace(";", "")
-            .Trim();
+        String filtered = expression.Replace("min:", "").Replace(";", "").Trim();
 
         // Extracts value pairs from filtered expression
-        List<(Int32 value, String varName)> valuesPairs = new();
+        Dictionary<String, Double> result = new();
         List<String> splittedPairs = filtered.Split("+").ToList();
 
+        result.Add ("result", 0);
+
         // Has to start at zero, since previous split function creates an empty field at index 0
-        for(int i = 1; i < splittedPairs.Count; i++)
+        for(Int32 i = 1; i < splittedPairs.Count; i++)
         {
             String[] split = splittedPairs[i].Split("*");
-            valuesPairs.Add(new(Convert.ToInt32(split[0].Trim()), split[1].Trim()));
-        }
-            
-        ObjFunction result = new(problemType, valuesPairs);
+            result.Add(split[1].Trim(), Convert.ToDouble(split[0].Trim()));
+        }      
 
         return result;
     }
 
-    private List<Constraint> GetConstraints(List<String> constraints)
+    private List<Dictionary<String, Double>> GetConstraints(List<String> constraints)
     {
-        List<Constraint> result = new();
+        List<Dictionary<String, Double>> result = new();
 
         foreach (var constraint in constraints)
         {
-            Int32 resultValue = GetConstraintResultFromString(constraint);
+            Dictionary<String, Double> line = new (); 
 
-            List<(Int32, String)> valuePairs =
-                GetConstraintValuePairsFromString(constraint);
+            Double resultValue = GetConstraintResultFromString(constraint);
+            line.Add ("result", resultValue);
 
-            // Adds finised parsed Lines to the globals list
-            Constraint lpLine = new(valuePairs, resultValue);
-            result.Add(lpLine);
+            GetConstraintValuePairsFromString(constraint, ref line);
+
+            result.Add(line);
         }
 
         return result;
     }
 
-    private Int32 GetConstraintResultFromString(String constraint)
+    private Double GetConstraintResultFromString(String constraint)
     {
         // Identifies right side of the constraint and trims off whitespaces and semicolon
         String result = constraint.Split(">=")[1].Replace(";", "").Trim();
-        return Convert.ToInt32(result);
+        return Convert.ToDouble(result);
     }
 
-    private List<(Int32, String)> GetConstraintValuePairsFromString(String constraint)
+    private void GetConstraintValuePairsFromString(
+        String constraint, ref Dictionary<String, Double> dict)
     {
-        List<(Int32 value, String varName)> result = new();
-
         // Clears line of complete right side 
         Regex regex = new Regex(@">=\d+;");
         String clearedLine = regex.Replace(constraint.Replace(" ", ""), "");
@@ -110,15 +105,14 @@ public class LPParser
         List<String> splittedPairs = clearedLine.Split("+").ToList();
 
         // Has to start at zero, since previous split function creates an empty field at index 0
-        for (int i = 1; i < splittedPairs.Count; i++)
+        for (Int32 i = 1; i < splittedPairs.Count; i++)
         {
             // Splits valuePair and assigns it into a tuple
             var split = splittedPairs[i].Split('*');
-            (Int32, String) tuple = new(Convert.ToInt32(split[0]), split[1]);
+            var splitValue = Convert.ToDouble (split[0]);
+            var splitName = split[1];
 
-            result.Add(tuple);
+            dict.Add(splitName, splitValue);
         }
-
-        return result;
     }
 }

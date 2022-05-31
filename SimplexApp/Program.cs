@@ -26,18 +26,20 @@ internal class Program
     static void SimplexCLIHandle(FileInfo fileInfo)
     {
         // Parse raw input into data structures
-        var parsedProblem = new LPParser(fileInfo).Parse();
+        var parsedProblem = new LPParser(fileInfo).Parse();        
 
-        LPSolver solver = new();
+        Console.WriteLine ("Initial \r\n");
+        LPPrint.Print (parsedProblem);
 
-        // Arrange data structures to array table and header lists
-        var table = solver.Arrange(
-            parsedProblem.Item1, parsedProblem.Item2);
+        var list = LPTransposer.Transpose (parsedProblem);
 
-        // Solve problem
-        List<(String, Double)> result = solver.Solve(table);
+        Console.WriteLine ("Transposed \r\n");
+        LPPrint.Print(list);
 
-        foreach(var row in result)
+        var result = new LPSolver(list).Solve();
+
+        /*foreach(var row in result)
             Console.WriteLine($"{row.Item1}: {row.Item2}");
+        */
     }
 }
