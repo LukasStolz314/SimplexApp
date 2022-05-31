@@ -9,7 +9,7 @@ public class LPSolver
         _list = list;
     }
 
-    public List<(String, Double)> Solve()
+    public Double Solve()
     {
         Boolean win = IsWong();
         Int32 iteration = 0;
@@ -30,7 +30,7 @@ public class LPSolver
             LPPrint.Print (_list);
         }
 
-        return new ();
+        return _list.Last()["result"] * -1;
     }
 
     private String GetPivotVariable()

@@ -1,12 +1,13 @@
 ﻿using SimplexLib;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
+using System.Diagnostics;
 
 namespace SimplexApp;
 
 internal class Program
 {
-    static async Task<int> Main(string[] args)
+    static async Task<Int32> Main(String[] args)
     {
         var fileOption = new Option<FileInfo?>(
             aliases: new String[] { "-lp", "--lpfile" },
@@ -25,6 +26,8 @@ internal class Program
 
     static void SimplexCLIHandle(FileInfo fileInfo)
     {
+        LPPrint.IsActive = false;
+
         // Parse raw input into data structures
         var parsedProblem = new LPParser(fileInfo).Parse();        
 
@@ -38,8 +41,6 @@ internal class Program
 
         var result = new LPSolver(list).Solve();
 
-        /*foreach(var row in result)
-            Console.WriteLine($"{row.Item1}: {row.Item2}");
-        */
+        Console.WriteLine ($"Result: {result}");
     }
 }
