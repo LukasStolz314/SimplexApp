@@ -1,0 +1,77 @@
+﻿@page "/"
+@using SimplexLib
+
+<PageTitle>Simplex</PageTitle>
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <InputFile OnChange="@LoadFiles"></InputFile>
+    </div>
+    <div class="row mb-3" style="height:600px;">
+        <RadzenTextArea class="p-3 bg-light border"
+            Style="font-size:20px; resize:none" @bind-Value="InputValue">
+        </RadzenTextArea>
+    </div>
+    <div class="row d-flex justify-content-end">
+        <RadzenButton class="p-3 m-3 h-100"
+            Style="width:120px;di" ButtonStyle=ButtonStyle.Secondary 
+            Click=@(args => OnClick())>Submit
+        </RadzenButton>        
+    </div>
+    @if(ResultValue is not null && ResultValue.Count >= 1)
+    {
+        <div class="row mb-3" style="height:600px;">
+            <RadzenDataList class="p-3 bg-light border" Data="@ResultValue" TItem="KeyValuePair<String, Double>">
+                <Template Context="value">
+                    @value.Key
+                    @value.Value
+                </Template>
+            </RadzenDataList>
+        </div>
+    }
+</div>
+
+@code {
+    public String? InputValue { get; set; }
+
+    public Dictionary<String, Double> ResultValue { get; set; }
+
+    private List<IBrowserFile> loadedFiles = new();
+
+    void OnClick()
+    {
+        ResultValue = new Simplex ().Solve (InputValue ?? "");
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        loadedFiles.Clear();
+
+        foreach (var file in e.GetMultipleFiles(1))
+        {
+            try
+            {
+                loadedFiles.Add(file);
+
+                var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                var path = Path.Combine(Environment.CurrentDirectory, "unsafe_uploads",
+                        trustedFileNameForFileStorage);
+
+                Console.WriteLine (path);
+
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.OpenReadStream(1024 * 15).CopyToAsync(fs);
+
+                fs.Close ();
+
+                InputValue = String.Empty;
+                foreach (var item in File.ReadAllLines (path))
+                    InputValue += item + Environment.NewLine;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine (ex.Message);
+            }
+        }
+    }
+}

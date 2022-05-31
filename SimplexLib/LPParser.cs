@@ -3,17 +3,8 @@
 namespace SimplexLib;
 public class LPParser
 {
-    private String filePath { get; set; }
-    public LPParser(FileInfo fileInfo)
+    public List<Dictionary<String, Double>> Parse(List<String> allLines)
     {
-        filePath = fileInfo.FullName;
-    }
-
-    public List<Dictionary<String, Double>> Parse()
-    {
-        // Reads and parses every line into list
-        List<String> allLines = File.ReadAllLines(filePath).ToList();
-
         // Get all relevant lines (clears comments)
         List<String> relLines = RemoveComments(allLines);
 
@@ -39,7 +30,7 @@ public class LPParser
         // Remove every line that starts with //
         foreach(String line in lines)
         {
-            if(!line.Trim().StartsWith("//"))
+            if(!line.Trim().StartsWith("//") && !String.IsNullOrEmpty(line) && line != Environment.NewLine)
                 result.Add(line);
         }
 

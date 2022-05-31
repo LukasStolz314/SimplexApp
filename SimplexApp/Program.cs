@@ -19,28 +19,8 @@ internal class Program
         rootCommand.AddOption(fileOption);
 
         rootCommand.SetHandler((FileInfo file)
-            => SimplexCLIHandle(file), fileOption);
+            => new Simplex().Solve(file), fileOption);
 
         return await rootCommand.InvokeAsync(args);
-    }
-
-    static void SimplexCLIHandle(FileInfo fileInfo)
-    {
-        LPPrint.IsActive = false;
-
-        // Parse raw input into data structures
-        var parsedProblem = new LPParser(fileInfo).Parse();        
-
-        Console.WriteLine ("Initial \r\n");
-        LPPrint.Print (parsedProblem);
-
-        var list = LPTransposer.Transpose (parsedProblem);
-
-        Console.WriteLine ("Transposed \r\n");
-        LPPrint.Print(list);
-
-        var result = new LPSolver(list).Solve();
-
-        Console.WriteLine ($"Result: {result}");
     }
 }

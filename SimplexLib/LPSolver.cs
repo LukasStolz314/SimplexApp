@@ -9,7 +9,7 @@ public class LPSolver
         _list = list;
     }
 
-    public Double Solve()
+    public Dictionary<String, Double> Solve()
     {
         Boolean win = IsWong();
         Int32 iteration = 0;
@@ -30,7 +30,9 @@ public class LPSolver
             LPPrint.Print (_list);
         }
 
-        return _list.Last()["result"] * -1;
+        var result = GetResult ();
+
+        return result;
     }
 
     private String GetPivotVariable()
@@ -96,6 +98,18 @@ public class LPSolver
         }
 
         _list = result;
+    }
+
+    private Dictionary<String, Double> GetResult()
+    {
+        Dictionary<String, Double> result = new ();
+
+        result.Add ("Result: ", _list.Last ()["result"] * -1);
+
+        foreach(var item in _list.Last().Where(x => x.Key.Contains("s") && x.Key.Count() < 6))
+            result.Add($"x{item.Key.Split("s")[1]}: ", item.Value == 0 ? 0 : item.Value * -1);
+
+        return result;
     }
 
     private Boolean IsWong() => _list.Last ().Values.Any (x => x > 0);

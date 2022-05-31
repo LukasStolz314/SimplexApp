@@ -9,9 +9,9 @@ public static class LPTransposer
 
         var transposedList = TransposeToList (variables, list);
 
-        var transposedDict = ToDict (variables, transposedList);
+        var result = ToDict (variables, transposedList);
 
-        var result = AddSlackVariables(transposedDict);        
+        result = AddSlackVariables(result);        
 
         return result;
     }
