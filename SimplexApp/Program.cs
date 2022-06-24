@@ -22,5 +22,7 @@ internal class Program
             => new Simplex().Solve(file), fileOption);
 
         await rootCommand.InvokeAsync(args);
+
+        Console.ReadLine();
     }
 }
