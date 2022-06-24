@@ -17,7 +17,11 @@ public class LPSolver
         {
             var pivotVariable = GetPivotVariable();
 
-            var pivotRow = GetPivotRow(pivotVariable);
+            var pivotRow = GetPivotRow(pivotVariable,
+                out List<Double> quotients);
+
+            LPPrint.PrintMeta (iteration, quotients, 
+                _list[pivotRow][pivotVariable], (pivotVariable, pivotRow));
 
             UnifyPivotRow(pivotRow, pivotVariable);
 
@@ -26,8 +30,7 @@ public class LPSolver
             win = IsWong();
 
             iteration++;
-            Console.WriteLine ($"Iteration: {iteration}");
-            LPPrint.Print (_list);
+            LPPrint.PrintTable (_list);
         }
 
         var result = GetResult ();
@@ -40,7 +43,7 @@ public class LPSolver
         return _list.Last().Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
     }
 
-    private Int32 GetPivotRow(String variable)
+    private Int32 GetPivotRow(String variable, out List<Double> quotientsResult)
     {
         Dictionary<Int32, Double> quotients = new ();
 
@@ -57,6 +60,7 @@ public class LPSolver
             quotients.Add(i, quotient);
         }
 
+        quotientsResult = quotients.Select(x => x.Value).ToList();
         return quotients.Aggregate((x, y) => x.Value < y.Value ? x : y).Key;
     }
 
