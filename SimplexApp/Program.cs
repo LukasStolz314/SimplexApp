@@ -7,7 +7,7 @@ namespace SimplexApp;
 
 internal class Program
 {
-    static async Task<Int32> Main(String[] args)
+    static async Task Main(String[] args)
     {
         var fileOption = new Option<FileInfo?>(
             aliases: new String[] { "-lp", "--lpfile" },
@@ -21,6 +21,6 @@ internal class Program
         rootCommand.SetHandler((FileInfo file)
             => new Simplex().Solve(file), fileOption);
 
-        return await rootCommand.InvokeAsync(args);
+        await rootCommand.InvokeAsync(args);
     }
 }
