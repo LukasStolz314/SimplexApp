@@ -8,7 +8,7 @@ public class Simplex
         var parsedProblem = new LPParser().Parse(lines);
 
         LPPrint.Print("Initial");
-        LPPrint.PrintTable(parsedProblem);
+        LPPrint.PrintInitialTable(parsedProblem);
 
         var list = LPTransposer.Transpose (parsedProblem);
 

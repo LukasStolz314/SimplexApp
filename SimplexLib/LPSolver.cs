@@ -11,7 +11,7 @@ public class LPSolver
 
     public Dictionary<String, Double> Solve()
     {
-        Boolean win = IsWong();
+        Boolean win = IsWon();
         Int32 iteration = 0;
         while(win)
         {
@@ -27,7 +27,7 @@ public class LPSolver
 
             UnifyOtherRows(pivotRow, pivotVariable);
 
-            win = IsWong();
+            win = IsWon();
 
             iteration++;
             LPPrint.PrintTable (_list);
@@ -116,5 +116,5 @@ public class LPSolver
         return result;
     }
 
-    private Boolean IsWong() => _list.Last ().Values.Any (x => x > 0);
+    private Boolean IsWon() => _list.Last ().Values.Any (x => x > 0);
 }

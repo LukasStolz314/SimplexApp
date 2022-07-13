@@ -1,14 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace SimplexLib;
 public static class LPPrint
 {
     public static String FilePath = $"log_{DateTime.Now.ToString("yyyyMMdd_hhmmss")}.txt";
+
+    public static void PrintInitialTable(List<Dictionary<String, Double>> list)
+    {
+        List<Dictionary<String, Double>> tempList = new(list);
+        var objFunction = tempList.FirstOrDefault () ?? new();
+        tempList.RemoveAt(0);
+
+        tempList.Add (objFunction);
+        PrintTable (tempList);
+    }
 
     public static void PrintTable(List<Dictionary<String, Double>> list)
     {
