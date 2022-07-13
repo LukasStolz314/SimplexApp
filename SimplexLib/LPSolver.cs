@@ -1,4 +1,6 @@
-﻿namespace SimplexLib;
+﻿using System.Globalization;
+
+namespace SimplexLib;
 
 public class LPSolver
 {
@@ -20,8 +22,8 @@ public class LPSolver
             var pivotRow = GetPivotRow(pivotVariable,
                 out List<Double> quotients);
 
-            LPPrint.PrintMeta (iteration, quotients, 
-                _list[pivotRow][pivotVariable], (pivotVariable, pivotRow));
+            LPPrint.PrintMeta (iteration, quotients, _list[pivotRow][pivotVariable],
+                (pivotVariable, pivotRow), _list.Last ()[pivotVariable]);
 
             UnifyPivotRow(pivotRow, pivotVariable);
 
@@ -76,30 +78,41 @@ public class LPSolver
         }
 
         _list[row] = newRow;
+
+        // Print
+        String newRowPrint = "";
+        foreach(var item in newRow)
+            newRowPrint += $"{item.Key}: {item.Value.ToString(CultureInfo.InvariantCulture)} | ";
+
+        LPPrint.Print ($"New row {row + 1}: {newRowPrint} \r\n");
     }
 
     private void UnifyOtherRows(Int32 pivotRow, String variable)
     {
         List<Dictionary<String, Double>> result = new ();
-        foreach(var row in _list)
+        for(Int32 i = 0; i < _list.Count; i++)
         {
-            if (_list[pivotRow] == row)
+            if (_list[pivotRow] == _list[i])
             {
-                result.Add(row);
+                result.Add(_list[i]);
                 continue;
             }
 
             Dictionary<String, Double> newRow = new ();
 
-            Double multiplier = row[variable];
-            foreach(var item in row)
+            Double multiplier = _list[i][variable];
+            foreach(var item in _list[i])
             {
                 var value = item.Value - multiplier * _list[pivotRow][item.Key];
                 newRow.Add (item.Key, value);
             }
 
+            LPPrint.Print ($"Calculate: Row {i + 1} - ({_list[i][variable]} * Pivot row)");
+
             result.Add (newRow);
         }
+
+        LPPrint.Print ("");
 
         _list = result;
     }

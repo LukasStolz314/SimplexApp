@@ -44,47 +44,54 @@ public static class LPPrint
 
         result.Add ("\r\n#####################\r\n");
 
-        File.AppendAllLinesAsync (FilePath, result);
+        File.AppendAllLines (FilePath, result);
         foreach(var line in result)
             Console.WriteLine(line);
     }
 
     public static void PrintMeta(Int32 iteration, List<Double> quotients,
-        Double pivotValue, (String, Int32) pivotPosition)
+        Double pivotValue, (String, Int32) pivotPosition, Double maxObjValue)
     {
-        List<String> result = new () { $"Iteration: {iteration + 1}" };
+        List<String> result = new () { $"Iteration: {iteration + 1} \r\n"};
+
+        result.Add ($"Maximal value in: {pivotPosition.Item1} => {maxObjValue.ToString(CultureInfo.InvariantCulture)}");
 
         String quotientLine = $"Quotients: ";
         foreach(var quotient in quotients)
             quotientLine += $"{quotient.ToString(CultureInfo.InvariantCulture)} | ";
 
         result.Add(quotientLine);
+        result.Add ("");
 
-        result.Add($"Pivot-Element: {pivotValue.ToString(CultureInfo.InvariantCulture)}");
-        result.Add ($"Pivot-Position: Variable: {pivotPosition.Item1} | Row: {pivotPosition.Item2}");
+        result.Add($"Pivot-Value: {pivotValue.ToString(CultureInfo.InvariantCulture)}");
+        result.Add ($"Pivot-Position: Variable: {pivotPosition.Item1} | Row: {pivotPosition.Item2 + 1}");
 
-        File.AppendAllLinesAsync (FilePath, result);
+        result.Add ("");
+
+        File.AppendAllLines (FilePath, result);
         foreach(var line in result)
             Console.WriteLine(line);
     }
 
     public static void Print(String text)
     {
-        File.AppendAllLinesAsync(FilePath, new List<String>() { text });
+        File.AppendAllLines(FilePath, new List<String>() { text });
         Console.WriteLine(text);
     }
 
-    public static void PrintResult(Dictionary<String, Double> results)
+    public static void PrintResult(Dictionary<String, Double> results, TimeSpan timespan)
     {
-        List<String> result = new ();
-        result.Add ($"Result: {results.First(x => x.Key.Equals("Result: ")).Value}");
+        List<String> result = new () { $"Total time: {timespan.TotalSeconds.ToString(CultureInfo.InvariantCulture)} seconds" };
+        result.Add ($"Result: {results.First(x => x.Key.Equals("Result: ")).Value.ToString(CultureInfo.InvariantCulture)}");
+
+
         foreach(var item in results)
         {
             if(item.Key != "Result: ")
-                result.Add($"{item.Key}: {item.Value}");
+                result.Add($"{item.Key}: {item.Value.ToString(CultureInfo.InvariantCulture)}");
         }
 
-        File.AppendAllLinesAsync (FilePath, result);
+        File.AppendAllLines (FilePath, result);
         foreach(var line in result)
             Console.WriteLine(line);
     }

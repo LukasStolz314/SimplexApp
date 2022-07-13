@@ -2,7 +2,7 @@
   "profiles": {
     "SimplexApp": {
       "commandName": "Project",
-      "commandLineArgs": "-lp .\\KI_5.txt"
+      "commandLineArgs": "-lp ./KI_30.txt"
     }
   }
 }
