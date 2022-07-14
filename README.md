@@ -7,9 +7,9 @@ Erstellt wurde die Anwendung als SFA (Single File Application). Dadurch wird kei
 ## Anleitung
 Der Simplex wird über die Kommandozeile genutzt und mit dem folgenden Befehl ausgeführt:
 
-`.\Simplex.exe -lp [Dateipfad]`
+`.\SimplexApp.exe -lp [Dateipfad]`
 
-Beispiel: `.\Simplex.exe -lp .\KI_5.txt`
+Beispiel: `.\SimplexApp.exe -lp .\KI_5.txt`
 
 ## Output
 Das Programm schreibt die logs in die Kommandozeile und erstellt zusätzlich eine log-Datei im selben Verzeichnis.
